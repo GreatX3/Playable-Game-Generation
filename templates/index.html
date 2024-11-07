@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> 🎮 Playable Game Generation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="//unpkg.com/layui@2.9.18/dist/css/layui.css" rel="stylesheet">
+</head>
+<style>
+    canvas {
+            width: 256px;
+            height: 256px;
+            border: 1px solid black;
+            margin-left: 30px;
+        }
+    #dur, #cmd {
+        margin-left: 30px;
+    }
+</style>
+<body>
+    <h1> 🎮 Playable Game Generation</h1>
+    <br>
+    <br>
+    <div class="layui-row">
+        <h3> Press `Start Game` to init the game 🚀</h3>
+      <div class="layui-col-xs4">
+        <canvas id="noiseImage" width="300" height="300"></canvas>
+        <h4 id="dur"></h4>
+        <h4 id="cmd"></h4>
+      </div>
+      <div class="layui-col-xs4">
+        <div class="layui-row" style="border: 1px solid black;">
+            <h3>Game Setting</h3>
+            <div class="layui-row">
+                <div class="layui-col-xs2" style="margin-top: 10px;">
+                    <h4 >Random Init:</h4>
+                  </div>
+                  <div class="layui-col-xs4">
+                    <div class="layui-form">
+                        <input type="radio" name="random_init" value="false" title="False" checked>
+                        <input type="radio" name="random_init" value="true" title="True"> 
+                    </div>
+                  </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-xs2" style="margin-top: 10px;">
+                    <h4 >Block:</h4>
+                  </div>
+                  <div class="layui-col-xs4">
+                    <div class="layui-form">
+                        <input type="radio" name="block" value="false" title="False" checked>
+                        <input type="radio" name="block" value="true" title="True"> 
+                    </div>
+                  </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-xs2" style="margin-top: 10px;">
+                    <h4 >Denosing Step:</h4>
+                  </div>
+                  <div class="layui-col-xs4">
+                    <div class="layui-form">
+                        <input type="radio" name="denosing_step" value="4" title="4" checked>
+                        <input type="radio" name="denosing_step" value="8" title="8"> 
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <div class="layui-row" style="padding-top: 20px;">
+            <div class="layui-col-xs3">
+                <button class="layui-btn layui-btn-primary" id="start-button">Start Game</button>
+            </div>
+            <div class="layui-col-xs3">
+                <h4 id="live_person">👤 Online Player: 0</h4>
+            </div>
+        </div>
+        
+        <br>
+
+          <br>
+          <br>
+          <div class="layui-row">
+              <div class="layui-col-md4">
+                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" style="opacity: 0; border-color: transparent;" id="lj-button">
+                    <i class="layui-icon layui-icon-left"></i>
+                  </button>
+                  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="j-button">
+                    <i class="layui-icon layui-icon-up"></i>
+                  </button>
+                  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" style="opacity: 0; border-color: transparent;" id="rj-button">
+                    <i class="layui-icon layui-icon-right"></i>
+                  </button>
+              </div>
+ 
+          <div>
+              <br>
+              <br>
+          <div class="layui-row">
+              <div class="layui-col-md4">
+                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="l-button">
+                    <i class="layui-icon layui-icon-left" ></i>
+                  </button>
+                  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i class="layui-icon layui-icon-down"></i>
+                  </button>
+                  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="r-button">
+                    <i class="layui-icon layui-icon-right" ></i>
+                  </button>
+              </div>
+              <div class="layui-col-md4">
+                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="s-button">
+                    Fire
+                  </button>
+                  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="null-button">
+                    Null
+                  </button>
+              </div>
+          <div>
+              <br>
+              <br>
+              <br>
+          <div class="layui-row">
+              <h4>You can use the arrow keys on the keyboard to move and the `z` to attack.</h4>
+          <div>
+
+      </div>
+    </div>
+    <script src="//unpkg.com/layui@2.9.18/dist/layui.js"></script>
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        document.getElementById('start-button').addEventListener('click', function() {
+            const randomInit = document.querySelector('input[name="random_init"]:checked').value;
+            const block = document.querySelector('input[name="block"]:checked').value;
+            const denosingStep = document.querySelector('input[name="denosing_step"]:checked').value;
+            socket.emit('start_game', {
+                random_init: randomInit,
+                block: block,
+                denosing_step: denosingStep
+            });
+        });
+
+        const canvas = document.getElementById('noiseImage');
+        const context = canvas.getContext('2d');
+        const image = new Image();
+        socket.on('update_frame', function(data) {
+            image.src = 'data:image/png;base64,' + data.image;
+            image.onload = function() {
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+        });
+
+        const cmdDisplay = document.getElementById('cmd');
+        const durDisplay = document.getElementById('dur');
+
+        socket.on('update_cmd', function(data) {
+            const cmd = data.cmd;
+            const dur = data.dur;
+            cmdDisplay.textContent = `🕹️ Action Command: ${cmd}`;
+            durDisplay.textContent = `⏰ Infer Time: ${dur}`;
+        });
+
+        const livePerson = document.getElementById('live_person');
+        socket.on('update_person', function(data) {
+            const num = data.num;
+            livePerson.textContent = `👤 Online Player: ${num}`;
+        });
+
+        const keyMap = {
+            'l-button': 'l',
+            'r-button': 'r',
+            'lj-button': 'lj',
+            'rj-button': 'rj',
+            'j-button': 'j',
+            'null-button': 'NULL',
+            's-button': 's'
+        };
+
+        for (const id in keyMap) {
+            document.getElementById(id).addEventListener('mousedown', function() {
+                socket.emit('key_press', { key: keyMap[id] });
+            });
+            document.getElementById(id).addEventListener('mouseup', function() {
+                socket.emit('key_release', { key: keyMap[id] });
+            });
+        }
+    
+        const keyboardMap = {
+            'ArrowLeft': 'l',
+            'ArrowRight': 'r',
+            'ArrowLeft+ArrowUp': 'lj',
+            'ArrowRight+ArrowUp': 'rj',
+            'ArrowUp': 'j',
+            'z': 's',
+            'n': 'NULL'
+        };
+        
+        let keysPressed = {};
+
+        document.addEventListener('keydown', function(event) {
+            keysPressed[event.key] = true;
+            handleKeyEvent(event, 'keydown');
+        });
+
+        document.addEventListener('keyup', function(event) {
+            delete keysPressed[event.key];
+            handleKeyEvent(event, 'keyup');
+        });
+
+        function handleKeyEvent(event, type) {
+            const key = event.key;
+            const shift = event.shiftKey;
+            let command = null;
+
+            // 检查组合键
+            if (keysPressed['ArrowLeft'] && keysPressed['ArrowUp']) {
+                command = 'lj';
+            } else if (keysPressed['ArrowRight'] && keysPressed['ArrowUp']) {
+                command = 'rj';
+            } else if (key === 'ArrowUp') {
+                command = 'j';
+            } else if (key === 'ArrowLeft') {
+                command = 'l';
+            } else if (key === 'ArrowRight') {
+                command = 'r';
+            } else if (keysPressed['z']) {
+                command = 's';
+            } else if (keysPressed['n']) {
+                command = 'NULL';
+            }
+
+            if (command) {
+                if (type === 'keydown') {
+                    socket.emit('key_press', { key: command });
+                } else if (type === 'keyup') {
+                    socket.emit('key_release', { key: command });
+                }
+            }
+        }
+    </script>
+</body>
+</html>

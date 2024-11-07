@@ -1,0 +1,45 @@
+debug: false
+lr: 1e-4
+x_shape: [4, 32, 32]
+z_shape:
+- 32
+- 32
+- 32
+frame_stack: 1
+data_mean: 0.5
+data_std: 0.5
+external_cond_dim: 1
+context_frames: 4
+weight_decay: 0.002
+warmup_steps: 5000
+gt_first_frame: 0.0
+gt_cond_prob: 0.0
+uncertainty_scale: 1
+chunk_size: 1
+calc_crps_sum: false
+learnable_init_z: true
+optimizer_beta:
+- 0.9
+- 0.99
+diffusion:
+  network_size: 48
+  beta_schedule: sigmoid
+  objective: pred_v
+  use_snr: true
+  use_cum_snr: true
+  snr_clip: 5.0
+  cum_snr_decay: 0.4096000000000001
+  timesteps: 1000
+  self_condition: false
+  ddim_sampling_eta: 0.0
+  p2_loss_weight_gamma: 0
+  p2_loss_weight_k: 1
+  schedule_fn_kwargs: {}
+  sampling_timesteps: 4
+  mask_unet: false
+  num_gru_layers: 0
+  num_mlp_layers: 0
+  return_all_timesteps: false
+  clip_noise: 6
+compute_fid_lpips: false
+_name: df_video_dmlab
