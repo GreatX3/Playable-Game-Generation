@@ -18,7 +18,7 @@ conda create --name pgg python=3.8
 conda activate pgg
 pip install -r requirements.txt
 ```
-Please download the model checkpoint from [Google Drive](https://drive.google.com/file/d/1qXprbYMowENP38a95wSZtohjkTIfs1s6/view?usp=drive_link) and put it in `./ckpt`
+Please download the model checkpoint from [Google Drive](https://drive.google.com/file/d/1jMHJAcWRysXtCyOk0O6XRcvEsuiPEU2H/view?usp=sharing) and put it in `./ckpt`
 
 Before starting, you need to set the running device in `config.py`. The default is `device = "cuda:0"`.
 # 🕹️ Runing a Simulation
