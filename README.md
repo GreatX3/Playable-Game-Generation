@@ -14,7 +14,7 @@ Due to load and network latency, the online demo may experience some lag. In the
 # 🏭 Setup
 We recommend using `conda` to build the base environment.
 ```
-git clone https://github.com/PlayableGameGeneration/Playable-Game-Generation.git
+git clone https://github.com/GreatX3/Playable-Game-Generation.git
 cd Playable-Game-Generation
 conda create --name pgg python=3.8
 conda activate pgg
