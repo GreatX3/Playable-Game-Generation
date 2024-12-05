@@ -1,13 +1,15 @@
 # <img src="./statics/icon_pgg.png" alt="icon" width="30" height="30"> Playable-Game-Generation
 ![The Framework of PGG](./statics/PlayGen.jpg)
 
-An open-source lightweight game generation paradigm. It includes everything from data processing to model architecture design and playability-based evaluation methods. The game runs at 20 FPS on a single consumer-grade graphics card (RTX-2060) while maintaining high playability.
+The **Playable Game Generation** (**PlayGen**) paradigm is an open-source, lightweight framework for game generation. It includes everything from data processing to model architecture design and playability-based evaluation methods. The game runs at 20 FPS on a single consumer-grade graphics card (RTX-2060) while maintaining high playability.
 
-If you want to know more details about the implementation, please refer to our paper [Playable Game Generation](https://arxiv.org/abs/2412.00887)
+If you want to know more details about the implementation, please refer to our **Paper**
+[**Playable Game Generation**](https://arxiv.org/abs/2412.00887)
 
-We have provided an online demo for you to experience: [Address 1](http://124.156.151.207/) or [Address 2](http://120.233.114.40/)
+We have provided two addresses for you to experience the **Demo online**. If you encounter any lag, you can switch between the different addresses:
+[**Online Demo 1**](http://124.156.151.207/) or [**Online Demo 2**](http://120.233.114.40/)
 
-Due to load and network latency, the online demo may experience some lag. In the current repository, we also provide a locally runnable demo and script inference modules.
+Due to load and network latency, the online demo may experience some lag. In the current repository, we also provide a **Locally Runnable Demo** and script inference modules.
 
 # 🏭 Setup
 We recommend using `conda` to build the base environment.
